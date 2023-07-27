@@ -1,15 +1,16 @@
-import { getDbClient } from './getDbClient'
+import { getDbClient } from '../src/helpers/getDbClient'
 
 const client = getDbClient()
 
-async function createSchema() {
+async function createSchema (): Promise<void> {
   try {
     await client.connect()
 
     // Define your schema creation queries here
     const schemaQueries = [
-      'CREATE TABLE IF NOT EXISTS migrations (id SERIAL PRIMARY KEY, name VARCHAR(50))'
-    ];
+      'CREATE EXTENSION IF NOT EXISTS "uuid-ossp"',
+      'CREATE TABLE IF NOT EXISTS assets (id uuid DEFAULT uuid_generate_v4 (), extension VARCHAR(220))'
+    ]
 
     for (const query of schemaQueries) {
       await client.query(query)
@@ -24,4 +25,4 @@ async function createSchema() {
   }
 }
 
-createSchema()
+void createSchema()
